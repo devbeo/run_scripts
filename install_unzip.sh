@@ -1,3 +1,3 @@
 #!/bin/bash
 
-apt install unzip -y
+apt-get update && apt-get install unzip -y
