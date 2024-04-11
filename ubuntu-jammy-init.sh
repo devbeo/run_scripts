@@ -96,7 +96,7 @@ sudo apt install -y zsh git curl
 sudo chsh -s $(which zsh) $user_name
 
 # Install zimfw for zsh
-sudo -u $user_name sh -c "$(curl -fsSL https://raw.githubusercontent.com/zimfw/install/master/install.zsh)"
+sudo -u $user_name sh -c 'curl -fsSL https://raw.githubusercontent.com/zimfw/install/master/install.zsh | zsh'
 
 # Install Docker
 # Add Docker's official GPG key:
