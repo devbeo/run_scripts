@@ -77,9 +77,17 @@ fi
 # Restart SSH service
 sudo systemctl restart ssh
 
+# Get the current hostname from /etc/hostname
+current_hostname=$(cat /etc/hostname)
+
+# Add the current hostname to /etc/hosts with IP address 127.0.1.1
+if [[ ! -z $current_hostname ]]; then
+    echo "127.0.1.1 $current_hostname" | sudo tee -a /etc/hosts
+fi
+
 # Update and upgrade packages
 sudo apt update -y
-sudo DEBIAN_FRONTEND=noninteractive apt full-upgrade -qy -o "Dpkg::Options::=--force-confdef"
+sudo DEBIAN_FRONTEND=noninteractive apt -qy -o "Dpkg::Options::=--force-confdef" -o "Dpkg::Options::=--force-confold" full-upgrade
 
 # Install required packages
 sudo apt install -y zsh git curl
@@ -91,7 +99,21 @@ sudo chsh -s $(which zsh) $user_name
 sudo -u $user_name sh -c "$(curl -fsSL https://raw.githubusercontent.com/zimfw/install/master/install.zsh)"
 
 # Install Docker
-curl -fsSL https://get.docker.com | sh -
+# Add Docker's official GPG key:
+sudo apt-get update
+sudo apt-get install ca-certificates curl -y
+sudo install -m 0755 -d /etc/apt/keyrings
+sudo curl -fsSL https://download.docker.com/linux/ubuntu/gpg -o /etc/apt/keyrings/docker.asc
+sudo chmod a+r /etc/apt/keyrings/docker.asc
+# Add the repository to Apt sources:
+echo \
+  "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.asc] https://download.docker.com/linux/ubuntu \
+  $(. /etc/os-release && echo "$VERSION_CODENAME") stable" | \
+  sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
+# Install docker packages
+sudo apt-get update
+sudo apt-get install docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin -y
+# Allow non-privileged users to run Docker commands
 sudo usermod -aG docker $user_name
 
 # Reboot the server to apply changes
