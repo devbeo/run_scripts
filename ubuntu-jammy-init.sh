@@ -47,19 +47,19 @@ if [[ -z $user_pw ]]; then
     exit 1
 fi
 
-if [[ -z $user_ssh_pubkey ]]; then
-    echo "User SSH public key is required. Please provide the -user_ssh_pubkey parameter."
-    exit 1
-fi
-
 # Create user with sudo privilege
 sudo useradd -m -s /bin/bash $user_name
 sudo usermod -aG sudo $user_name
 echo "$user_name:$user_pw" | sudo chpasswd
-sudo mkdir /home/$user_name/.ssh
-echo "$user_ssh_pubkey" | sudo tee -a /home/$user_name/.ssh/authorized_keys
-sudo chmod 700 /home/$user_name/.ssh
-sudo chmod 600 /home/$user_name/.ssh/authorized_keys
+
+# Change SSH Key if provided
+if [[ ! -z $user_ssh_pubkey ]]; then
+    sudo mkdir /home/$user_name/.ssh
+    sudo chown -R $user_name:$user_name /home/$user_name/.ssh
+    echo "$user_ssh_pubkey" | sudo tee -a /home/$user_name/.ssh/authorized_keys
+    sudo chmod 700 /home/$user_name/.ssh
+    sudo chmod 600 /home/$user_name/.ssh/authorized_keys
+fi
 
 # Configure sudo to not prompt for password
 echo "$user_name ALL=(ALL) NOPASSWD:ALL" | sudo tee -a /etc/sudoers.d/$user_name
