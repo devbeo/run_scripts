@@ -55,10 +55,10 @@ echo "$user_name:$user_pw" | sudo chpasswd
 # Change SSH Key if provided
 if [[ ! -z $user_ssh_pubkey ]]; then
     sudo mkdir /home/$user_name/.ssh
-    sudo chown -R $user_name:$user_name /home/$user_name/.ssh
     echo "$user_ssh_pubkey" | sudo tee -a /home/$user_name/.ssh/authorized_keys
     sudo chmod 700 /home/$user_name/.ssh
     sudo chmod 600 /home/$user_name/.ssh/authorized_keys
+    sudo chown -R $user_name:$user_name /home/$user_name/.ssh
 fi
 
 # Configure sudo to not prompt for password
@@ -71,7 +71,6 @@ sudo sed -i 's/#PasswordAuthentication yes/PasswordAuthentication no/g' /etc/ssh
 # Change SSH port if provided
 if [[ ! -z $ssh_port ]]; then
     sudo sed -i "s/#Port 22/Port $ssh_port/g" /etc/ssh/sshd_config
-    sudo systemctl restart ssh
 fi
 
 # Restart SSH service
