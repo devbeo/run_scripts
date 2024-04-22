@@ -66,7 +66,7 @@ echo "$user_name ALL=(ALL) NOPASSWD:ALL" | sudo tee -a /etc/sudoers.d/$user_name
 
 # Update and upgrade packages
 sudo apt update -y
-sudo DEBIAN_FRONTEND=noninteractive apt -qy -o "Dpkg::Options::=--force-confdef" -o "Dpkg::Options::=--force-confold" full-upgrade
+sudo DEBIAN_FRONTEND=noninteractive NEEDRESTART_MODE=a apt -qy -o "Dpkg::Options::=--force-confdef" -o "Dpkg::Options::=--force-confold" full-upgrade
 
 # Install required packages
 sudo apt install -y zsh git curl
@@ -91,7 +91,7 @@ echo \
   sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
 # Install docker packages
 sudo apt-get update
-sudo apt-get install docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin -y
+sudo DEBIAN_FRONTEND=noninteractive NEEDRESTART_MODE=a apt-get -qy -o "Dpkg::Options::=--force-confdef" -o "Dpkg::Options::=--force-confold" install docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
 # Allow non-privileged users to run Docker commands
 sudo usermod -aG docker $user_name
 
