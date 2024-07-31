@@ -96,6 +96,7 @@ sudo chsh -s $(which zsh) $user_name
 
 # Install zimfw for zsh
 sudo -u $user_name sh -c 'curl -fsSL https://raw.githubusercontent.com/zimfw/install/master/install.zsh | zsh'
+echo "skip_global_compinit=1" | sudo tee -a /home/$user_name/.zshenv
 
 # Install Docker
 # Add Docker's official GPG key:
