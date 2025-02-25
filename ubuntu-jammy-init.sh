@@ -86,6 +86,7 @@ fi
 
 # Update and upgrade packages
 echo "\$nrconf{restart} = 'a';" | sudo tee -a /etc/needrestart/conf.d/90-autorestart.conf
+echo "\$nrconf{kernelhints} = -1;" | sudo tee -a /etc/needrestart/conf.d/90-autorestart.conf
 sudo apt update -y
 sudo DEBIAN_FRONTEND=noninteractive NEEDRESTART_MODE=a apt -qy -o "Dpkg::Options::=--force-confdef" -o "Dpkg::Options::=--force-confold" full-upgrade
 
